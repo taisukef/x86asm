@@ -13,7 +13,7 @@ _main:
 	SHL AX, 1
 	SHL AX, 1
 	ADD AX, BX
-	CALL putnumhex
+	CALL putnum
 
 	cpu 186
 	MOV AX, 5
@@ -21,7 +21,7 @@ _main:
 	MOV BX, AX
 	SHL AX, 3 ; from 186
 	ADD AX, BX
-	CALL putnumhex
+	CALL putnum
 
 	cpu 8086
 	MOV AX, 5
@@ -31,41 +31,21 @@ _main:
 	DEC CL
 	SHL AX, CL
 	ADD AX, BX
-	CALL putnumhex
+	CALL putnum
 
 	cpu 8086
 	MOV AX, 5
 	MOV BX, 144
 	MUL BX
-	CALL putnumhex
+	CALL putnum
 
 	MOV AL,0
 	RET
 
 	cpu IA64
 
-	;mov rax, 0x1234567812345678
-	;call putnumhex
-	;ret
-
-putnumhex: ; rax
-	mov cx, 16
-putnum_l1:
-	sub cx, 4
-	push rax
-	push cx
-	shr rax, cl
-	and rax, 15
-	call putnum1
-	pop cx
-	pop rax
-	inc cx
-	dec cx
-	jnz putnum_l1	
-	call putret
-	ret
-
 putnum1: ; rax 0-15
+	and rax, 0xf
 	mov rsi, NUMBERS		;  buffer
 	add rsi, rax
 	mov rax, 0x2000004		; syscall 4: write
@@ -82,27 +62,42 @@ putret:
 	syscall
 	ret
 
-putnum: ; rax
-	mov bx, 10000
-putnem_l1:
-	push ax
-	push bx
-	mov dx, 0
-	div bx
-	call putnum1
-	pop bx
-	mov ax, bx
-	mov bx, 10
-	div bx
-	pop ax
-	inc bx
-	dec bx
-	jnz putnum_l1
+putnum:
+	call putnum_noret
+	call putret
+	ret
+putnum_noret:
+	xor dx, dx           ; DX=0
+	mov cx, 10           ; Divisor = 10
+	div cx               ; Divide (AX..DX=DX:AX/CX)
+	or ax, ax            ; AX == 0?
+	push dx              ; push remain
+	je putnum_skip       ; if AX == 0 skip
+	call putnum_noret    ; output left side
+putnum_skip:
+  pop ax
+	jmp putnum1
 
+	;mov rax, 0x1234567812345678
+	;call putnumhex
+	;ret
+putnumhex: ; rax
+	mov cx, 16 ; output 16bit
+putnumhex_l1:
+	sub cx, 4
+	push rax
+	push cx
+	shr rax, cl
+	and rax, 15
+	call putnum1
+	pop cx
+	pop rax
+	inc cx
+	dec cx
+	jnz putnumhex_l1	
 	call putret
 	ret
 
 SECTION .data
 	NUMBERS db `0123456789ABCDEF`
 	RETCODE db `\n`
-
