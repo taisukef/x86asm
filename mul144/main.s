@@ -17,9 +17,9 @@ _main:
 
 	cpu 186
 	MOV AX, 5
-	SHL AX, 4 ; from 186
+	SHL AX, 4 ; from 80186
 	MOV BX, AX
-	SHL AX, 3 ; from 186
+	SHL AX, 3 ; from 80186
 	ADD AX, BX
 	CALL putnum
 
