@@ -39,6 +39,7 @@ _main:
 	MUL BX
 	CALL putnumhex
 
+	MOV AL,0
 	RET
 
 	cpu IA64

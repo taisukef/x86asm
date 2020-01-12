@@ -15,10 +15,11 @@ main_loop:
 	cmp eax, 16 
 	jne main_loop
 
+	mov al, 0
 	ret
 
 putnumhex: ; eax
-	mov cx, 32
+	mov cx, 16
 putnum_l1:
 	sub cx, 4
 	push eax
