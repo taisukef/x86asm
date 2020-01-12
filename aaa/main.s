@@ -6,12 +6,13 @@ _main:
 
 main_loop:
 	push eax
-	or ax, ax
-	aaa
+	clc
+	
+	AAA
+	
 	call putnumhex
 	pop eax
 	inc eax
-	
 	cmp eax, 16 
 	jne main_loop
 
