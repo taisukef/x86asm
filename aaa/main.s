@@ -12,7 +12,7 @@ main_loop:
 	pop eax
 	inc eax
 	
-	cmp eax, 20
+	cmp eax, 16 
 	jne main_loop
 
 	ret

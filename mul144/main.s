@@ -2,8 +2,8 @@ SECTION .text
 global _main 
 
 _main:
-	mov rax, 5
-
+	cpu 8086
+	MOV AX, 5
 	SHL AX, 1
 	SHL AX, 1
 	SHL AX, 1
@@ -13,24 +13,42 @@ _main:
 	SHL AX, 1
 	SHL AX, 1
 	ADD AX, BX
+	CALL putnumhex
 
-	call putnumhex
+	cpu 186
+	MOV AX, 5
+	SHL AX, 4 ; from 186
+	MOV BX, AX
+	SHL AX, 3 ; from 186
+	ADD AX, BX
+	CALL putnumhex
 
-	mov rax, 5
-	
+	cpu 8086
+	MOV AX, 5
+	MOV CL, 4
+	SHL AX, CL
+	MOV BX, AX
+	DEC CL
+	SHL AX, CL
+	ADD AX, BX
+	CALL putnumhex
+
+	cpu 8086
+	MOV AX, 5
 	MOV BX, 144
 	MUL BX
-	
-	call putnumhex
+	CALL putnumhex
 
-	ret
+	RET
+
+	cpu IA64
 
 	;mov rax, 0x1234567812345678
 	;call putnumhex
 	;ret
 
 putnumhex: ; rax
-	mov cx, 64
+	mov cx, 16
 putnum_l1:
 	sub cx, 4
 	push rax
